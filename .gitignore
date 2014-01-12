@@ -15,3 +15,5 @@ bugs
 .dexy
 .trash
 Dockerfile
+venv
+.idea
