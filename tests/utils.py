@@ -34,8 +34,7 @@ class wrap(tempdir):
         self.remove_temp_dir()
         if isinstance(value, InactivePlugin):
             print value.message
-            raise SkipTest
-            return True # swallow InactivePlugin error
+            raise SkipTest("Inactive plugin: %s" % value)
 
 class runfilter(wrap):
     """
