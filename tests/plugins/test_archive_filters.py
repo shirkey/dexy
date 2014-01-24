@@ -1,10 +1,12 @@
+import tarfile
+import zipfile
+
 from dexy.doc import Doc
 from tests.utils import tempdir
 from tests.utils import wrap
 from dexy.wrapper import Wrapper
 import os
-import tarfile
-import zipfile
+
 
 def test_zip_archive_filter():
     with tempdir():
@@ -19,14 +21,14 @@ def test_zip_archive_filter():
         wrapper = Wrapper()
 
         doc = Doc("archive.zip|zip",
-                wrapper,
-                [
-                    Doc("hello.py", wrapper),
-                    Doc("hello.rb", wrapper),
-                    Doc("hello.py|pyg", wrapper),
-                    Doc("hello.rb|pyg", wrapper)
-                    ],
-                contents=" ")
+                  wrapper,
+                  [
+                      Doc("hello.py", wrapper),
+                      Doc("hello.rb", wrapper),
+                      Doc("hello.py|pyg", wrapper),
+                      Doc("hello.rb|pyg", wrapper)
+                  ],
+                  contents=" ")
 
         wrapper.run_docs(doc)
         wrapper.report()
@@ -41,6 +43,7 @@ def test_zip_archive_filter():
         assert "archive/hello.rb-pyg.html" in names
         z.close()
 
+
 def test_archive_filter():
     with wrap() as wrapper:
         with open("hello.py", "w") as f:
@@ -54,14 +57,14 @@ def test_archive_filter():
         wrapper = Wrapper()
 
         doc = Doc("archive.tgz|archive",
-                wrapper,
-                [
-                    Doc("hello.py", wrapper),
-                    Doc("hello.rb", wrapper),
-                    Doc("hello.py|pyg", wrapper),
-                    Doc("hello.rb|pyg", wrapper)
-                ],
-                contents=" ")
+                  wrapper,
+                  [
+                      Doc("hello.py", wrapper),
+                      Doc("hello.rb", wrapper),
+                      Doc("hello.py|pyg", wrapper),
+                      Doc("hello.rb|pyg", wrapper)
+                  ],
+                  contents=" ")
 
         wrapper.run_docs(doc)
         wrapper.report()
@@ -74,6 +77,7 @@ def test_archive_filter():
         assert "archive/hello.py-pyg.html" in names
         assert "archive/hello.rb-pyg.html" in names
         tar.close()
+
 
 def test_archive_filter_with_short_names():
     with wrap() as wrapper:
@@ -88,20 +92,19 @@ def test_archive_filter_with_short_names():
         wrapper = Wrapper()
 
         doc = Doc("archive.tgz|archive",
-                wrapper,
-                [
-                    Doc("hello.py", wrapper),
-                    Doc("hello.rb", wrapper),
-                    Doc("hello.py|pyg", wrapper),
-                    Doc("hello.rb|pyg", wrapper)
-                    ],
-                contents=" ",
-                archive={'use-short-names' : True}
-                )
+                  wrapper,
+                  [
+                      Doc("hello.py", wrapper),
+                      Doc("hello.rb", wrapper),
+                      Doc("hello.py|pyg", wrapper),
+                      Doc("hello.rb|pyg", wrapper)
+                  ],
+                  contents=" ",
+                  archive={'use-short-names': True}
+        )
 
         wrapper.run_docs(doc)
         wrapper.report()
-
 
         assert os.path.exists("output/archive.tgz")
         tar = tarfile.open("output/archive.tgz", mode="r:gz")
@@ -111,6 +114,7 @@ def test_archive_filter_with_short_names():
         assert "archive/hello.py.html" in names
         assert "archive/hello.rb.html" in names
         tar.close()
+
 
 def test_unprocessed_directory_archive_filter():
     with wrap() as wrapper:
@@ -125,11 +129,11 @@ def test_unprocessed_directory_archive_filter():
         wrapper = Wrapper()
 
         doc = Doc("archive.tgz|tgzdir",
-                wrapper,
-                [],
-                contents="ignore",
-                tgzdir={'dir' : '.'}
-                )
+                  wrapper,
+            [],
+                  contents="ignore",
+                  tgzdir={'dir': '.'}
+        )
         wrapper.run_docs(doc)
         wrapper.report()
 

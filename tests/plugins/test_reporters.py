@@ -2,6 +2,7 @@ import os
 from dexy.doc import Doc
 from tests.utils import wrap
 
+
 def test_output_reporter():
     with wrap() as wrapper:
         wrapper.reports = "output"

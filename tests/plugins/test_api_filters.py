@@ -1,7 +1,9 @@
-from tests.utils import wrap
 from mock import patch
+
+from tests.utils import wrap
 import dexy.filter
 import os
+
 
 @patch('os.path.expanduser')
 def test_docmd_create_keyfile(mod):

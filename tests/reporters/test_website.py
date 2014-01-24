@@ -1,9 +1,11 @@
 from dexy.reporters.website.classes import Navigation
 from dexy.reporters.website.classes import Node
 
+
 def test_navigation():
-   nav = Navigation()
-   assert nav.nodes["/"] == nav.root
+    nav = Navigation()
+    assert nav.nodes["/"] == nav.root
+
 
 def test_iter():
     nav = Navigation()

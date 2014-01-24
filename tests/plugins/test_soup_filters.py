@@ -1,10 +1,12 @@
 from tests.utils import runfilter
 
+
 def test_nested_html():
     with runfilter('soups', nested_html) as doc:
         data = doc.output_data()
         assert unicode(data) == expected
         assert data.keys() == [u'First', u'Second', u'Actual Document Contents']
+
 
 def test_markdown_output():
     with runfilter('markdown|soups', md) as doc:
@@ -20,13 +22,14 @@ def test_markdown_output():
         assert data['bar']['id'] == 'bar'
         assert data['barbaz']['id'] == 'barbaz'
 
+
 def test_soup_sections_filter():
     with runfilter('soups', html, ext='.html') as doc:
         data = doc.output_data()
 
         assert data.keys() == [u'The First Named Section',
-                u'Nested In First Section', u'The 2nd Section',
-                u'Actual Document Contents']
+                               u'Nested In First Section', u'The 2nd Section',
+                               u'Actual Document Contents']
 
         first_section = data["The First Named Section"]
         assert first_section['contents'] == None
@@ -43,9 +46,11 @@ def test_soup_sections_filter():
         contents_section = data['Actual Document Contents']
         assert contents_section['level'] == 1
 
+
 def test_no_blank_anonymous_first_section():
     with runfilter('soups', "<h1>first</h1><p>foo</p><h1>second</h1>", ext=".html") as doc:
         assert doc.output_data().keys() == [u'first', u'second', u'Actual Document Contents']
+
 
 nested_html = """<div>
 <h1>First</h1>

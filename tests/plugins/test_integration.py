@@ -1,20 +1,24 @@
+import inspect
+import random
+import shutil
+
 from dexy.wrapper import Wrapper
 from tests.utils import TEST_DATA_DIR
 from tests.utils import tempdir
 from tests.utils import wrap
 import dexy.doc
 import dexy.node
-import inspect
 import os
-import random
-import shutil
+
 
 LOGLEVEL = "WARN"
+
 
 def assert_node_state(node, expected, additional_info=''):
     msg = "'%s' not in state '%s',  in state '%s'. %s"
     msgargs = (node.key, expected, node.state, additional_info)
     assert node.state == expected, msg % msgargs
+
 
 def test_example_project():
     with tempdir():
@@ -22,10 +26,10 @@ def test_example_project():
             n = random.randint(2, 10)
             print "running %s times:" % n
             for i in range(n):
-                print '', i+1
+                print '', i + 1
                 wrapper = Wrapper(log_level=LOGLEVEL, debug=True)
                 wrapper.run_from_new()
-    
+
                 for node in wrapper.nodes.values():
                     assert_node_state(node, 'consolidated', "In iter %s" % i)
 
@@ -50,18 +54,18 @@ def test_example_project():
         os.utime("multiply.py", None)
 
         unaffected_keys = ('latex', 'pygments.sty|pyg', 's1/loop.py|pycon', 's1/loop.py|py',
-                'main.rst|idio|h', 'main.rst|idio|l', 'main.rst|pyg|l', 'main.rst|pyg|h',
-                's1/loop.py|idio|h', 's1/loop.py|idio|l', 's1/loop.py|pyg|l', 's1/loop.py|pyg|h',
-                'dexy.yaml|idio|h', 'dexy.yaml|idio|l', 'dexy.yaml|pyg|l', 'dexy.yaml|pyg|h',
-                )
+                           'main.rst|idio|h', 'main.rst|idio|l', 'main.rst|pyg|l', 'main.rst|pyg|h',
+                           's1/loop.py|idio|h', 's1/loop.py|idio|l', 's1/loop.py|pyg|l', 's1/loop.py|pyg|h',
+                           'dexy.yaml|idio|h', 'dexy.yaml|idio|l', 'dexy.yaml|pyg|l', 'dexy.yaml|pyg|h',
+        )
 
         affected_keys = ('code', 'docs', "*|pyg|l", "*|pyg|h", "*|idio|l", "*|idio|h",
-                "main.rst|jinja|rst|latex", "*.rst|jinja|rst|latex",
-                "*.py|pycon", "*.py|py", "main.rst|jinja|rstbody|easyhtml",
-                "*.rst|jinja|rstbody|easyhtml", "foo.txt",
-                "multiply.py|idio|h", "multiply.py|idio|l", "multiply.py|pycon", "multiply.py|py",
-                "multiply.py|pyg|h", "multiply.py|pyg|l",
-                )
+                         "main.rst|jinja|rst|latex", "*.rst|jinja|rst|latex",
+                         "*.py|pycon", "*.py|py", "main.rst|jinja|rstbody|easyhtml",
+                         "*.rst|jinja|rstbody|easyhtml", "foo.txt",
+                         "multiply.py|idio|h", "multiply.py|idio|l", "multiply.py|pycon", "multiply.py|py",
+                         "multiply.py|pyg|h", "multiply.py|pyg|l",
+        )
 
         wrapper = Wrapper(log_level=LOGLEVEL)
         wrapper.run_from_new()
@@ -76,12 +80,11 @@ def test_example_project():
 
         run_from_cache_a_bunch_of_times()
 
-        import time
         time.sleep(0.5)
 
         with open("multiply.py", "r") as f:
             old_content = f.read()
-        
+
         with open("multiply.py", "w") as f:
             f.write("raise")
 
@@ -90,6 +93,7 @@ def test_example_project():
         assert wrapper.state == 'error'
 
         import time
+
         time.sleep(0.9)
 
         with open("multiply.py", "w") as f:
@@ -124,6 +128,7 @@ def test_example_project():
 
         os.chdir("..")
 
+
 def test_ragel_state_chart_to_image():
     ragel = inspect.cleandoc("""
         %%{
@@ -139,16 +144,16 @@ def test_ragel_state_chart_to_image():
         """)
     with wrap() as wrapper:
         graph_png = dexy.doc.Doc("example.rl|rlrbd|dot",
-                wrapper,
-                [],
-                contents=ragel
-                )
+                                 wrapper,
+            [],
+                                 contents=ragel
+        )
 
         syntax = dexy.doc.Doc("example.rl|rlrbd|pyg",
-                wrapper,
-                [],
-                contents=ragel
-                )
+                              wrapper,
+            [],
+                              contents=ragel
+        )
 
         wrapper.run_docs(graph_png, syntax)
         assert graph_png.state == 'ran'

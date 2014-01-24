@@ -10,6 +10,7 @@ from dexy.wrapper import Wrapper
 import dexy.batch
 import os
 
+
 def test_deprecated_dot_dexy_file():
     with tempdir():
         with open(".dexy", 'w') as f:
@@ -19,6 +20,7 @@ def test_deprecated_dot_dexy_file():
             wrapper.assert_dexy_dirs_exist()
         except UserFeedback as e:
             assert "this format is no longer supported" in str(e)
+
 
 def test_cache_and_dexy_dirs_present():
     with tempdir():
@@ -45,19 +47,21 @@ def test_cache_and_dexy_dirs_present():
         # Dexy uses .dexy dir
         assert os.path.exists(".dexy")
 
+
 def test_move_cache_dir():
     with capture_stdout() as stdout:
         with tempdir():
             os.mkdir(".cache")
             with open(".cache/.dexy-generated", 'w') as f:
                 f.write("")
-    
+
             wrapper = Wrapper()
             wrapper.assert_dexy_dirs_exist()
-    
+
             assert "Moving directory '.cache'" in stdout.getvalue()
             assert not os.path.exists(".cache")
             assert os.path.exists(".dexy")
+
 
 def test_old_cache_dir_with_settings():
     with capture_stdout() as stdout:
@@ -66,19 +70,21 @@ def test_old_cache_dir_with_settings():
 
             with open(".cache/.dexy-generated", 'w') as f:
                 f.write("")
-    
-            wrapper = Wrapper(artifacts_dir = ".cache")
+
+            wrapper = Wrapper(artifacts_dir=".cache")
             wrapper.assert_dexy_dirs_exist()
 
             assert os.path.exists(".cache")
             assert not os.path.exists(".dexy")
-    
+
             assert "You may have a dexy.conf file" in stdout.getvalue()
+
 
 def test_remove_trash_no_trash():
     with tempdir():
         wrapper = Wrapper()
         wrapper.empty_trash()
+
 
 def test_remove_trash_with_trash():
     with tempdir():
@@ -88,9 +94,11 @@ def test_remove_trash_with_trash():
         wrapper.empty_trash()
         assert not os.path.exists(".trash")
 
+
 def test_state_new_after_init():
     wrapper = Wrapper()
     wrapper.validate_state('new')
+
 
 def test_error_if_to_valid_called_without_dirs_setup():
     with tempdir():
@@ -101,12 +109,14 @@ def test_error_if_to_valid_called_without_dirs_setup():
         except InternalDexyProblem:
             assert True
 
+
 def test_state_valid_after_to_valid():
     with tempdir():
         wrapper = Wrapper()
         wrapper.create_dexy_dirs()
         wrapper.to_valid()
         wrapper.validate_state('valid')
+
 
 def test_walked():
     with tempdir():
@@ -122,6 +132,7 @@ def test_walked():
         wrapper.to_walked()
         wrapper.validate_state('walked')
 
+
 def test_checked():
     with tempdir():
         with open("dexy.yaml", "w") as f:
@@ -136,6 +147,7 @@ def test_checked():
         wrapper.to_walked()
         wrapper.to_checked()
         wrapper.validate_state('checked')
+
 
 def test_ran():
     with tempdir():
@@ -158,11 +170,13 @@ def test_ran():
             assert node.state == 'consolidated'
         wrapper.validate_state('ran')
 
+
 def test_explicit_configs():
     wrapper = Wrapper()
     wrapper.configs = "foo.txt bar.txt   abc/def/foo.txt "
     assert wrapper.explicit_config_files() == ['foo.txt',
-            'bar.txt', 'abc/def/foo.txt']
+                                               'bar.txt', 'abc/def/foo.txt']
+
 
 def test_parse_doc_configs_single_empty_config():
     with tempdir():
@@ -179,6 +193,7 @@ def test_parse_doc_configs_single_empty_config():
         wrapper.to_valid()
         wrapper.to_walked()
 
+
 def test_parse_doc_configs_no_configs():
     with tempdir():
         with capture_stdout() as stdout:
@@ -191,6 +206,7 @@ def test_parse_doc_configs_no_configs():
             value = stdout.getvalue()
         assert "didn't find any document config files" in value
 
+
 def test_assert_dexy_dirs():
     with tempdir():
         wrapper = Wrapper()
@@ -200,6 +216,7 @@ def test_assert_dexy_dirs():
         except UserFeedback:
             assert True
 
+
 def test_create_remove_dexy_dirs():
     with tempdir():
         wrapper = Wrapper()
@@ -208,6 +225,7 @@ def test_create_remove_dexy_dirs():
         assert wrapper.dexy_dirs_exist()
         wrapper.remove_dexy_dirs()
         assert not wrapper.dexy_dirs_exist()
+
 
 def test_init_wrapper_if_dexy_dirs_exist():
     with tempdir():
@@ -224,6 +242,7 @@ def test_init_wrapper_if_dexy_dirs_exist():
         assert 'hello.txt' in wrapper.filemap
         assert 'dexy.log' in os.listdir('.dexy')
         assert not '.dexy/dexy.log' in wrapper.filemap
+
 
 def test_nodexy_files():
     with tempdir():
@@ -305,13 +324,15 @@ def test_config_for_directory():
         c = wrapper.nodes["doc:s2/s2.abc"]
         assert c in p.children
 
+
 def test_config_file():
     with tempdir():
         with open("dexy.conf", "w") as f:
             f.write("""{ "logfile" : "a.log" }""")
 
-        wrapper = init_wrapper({'conf' : 'dexy.conf'})
+        wrapper = init_wrapper({'conf': 'dexy.conf'})
         assert wrapper.log_file == "a.log"
+
 
 def test_kwargs_override_config_file():
     with tempdir():
@@ -319,15 +340,17 @@ def test_kwargs_override_config_file():
             f.write("""{ "logfile" : "a.log" }""")
 
         wrapper = init_wrapper({
-            '__cli_options' : { 'logfile' : 'b.log' },
-            'logfile' : "b.log",
-            'conf' : 'dexy.conf'
-            })
+            '__cli_options': {'logfile': 'b.log'},
+            'logfile': "b.log",
+            'conf': 'dexy.conf'
+        })
         assert wrapper.log_file == "b.log"
+
 
 def test_wrapper_init():
     wrapper = Wrapper()
     assert wrapper.artifacts_dir == '.dexy'
+
 
 YAML = """foo:
     - bar
@@ -340,6 +363,7 @@ xyz:
     - abc
     - def
 """
+
 
 def run_yaml_with_target(target):
     with wrap() as wrapper:
@@ -364,6 +388,7 @@ def run_yaml_with_target(target):
 
         yield wrapper
 
+
 def test_run_target_foo():
     for wrapper in run_yaml_with_target("foo"):
         assert wrapper.nodes['bundle:foo'].state == 'ran'
@@ -372,6 +397,7 @@ def test_run_target_foo():
         assert wrapper.nodes['bundle:foob'].state == 'uncached'
         assert wrapper.nodes['bundle:foobar'].state == 'uncached'
         assert wrapper.nodes['bundle:xyz'].state == 'uncached'
+
 
 def test_run_target_fo():
     for wrapper in run_yaml_with_target("fo"):
@@ -384,6 +410,7 @@ def test_run_target_fo():
         assert wrapper.nodes['bundle:foob'].state == 'ran'
         assert wrapper.nodes['bundle:foobar'].state == 'ran'
 
+
 def test_run_target_bar():
     for wrapper in run_yaml_with_target("bar"):
         assert wrapper.nodes['bundle:foo'].state == 'uncached'
@@ -391,6 +418,7 @@ def test_run_target_bar():
         assert wrapper.nodes['bundle:baz'].state == 'uncached'
         assert wrapper.nodes['bundle:foob'].state == 'uncached'
         assert wrapper.nodes['bundle:foobar'].state == 'uncached'
+
 
 def test_run_target_ba():
     for wrapper in run_yaml_with_target("ba"):

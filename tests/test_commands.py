@@ -1,14 +1,17 @@
 from StringIO import StringIO
-from dexy.version import DEXY_VERSION
-from dexy.wrapper import Wrapper
+import sys
+
 from mock import patch
 from nose.exc import SkipTest
 from nose.tools import raises
+
+from dexy.version import DEXY_VERSION
+from dexy.wrapper import Wrapper
 from tests.utils import tempdir
 from tests.utils import wrap
 import dexy.commands
 import os
-import sys
+
 
 def test_init_wrapper():
     with tempdir():
@@ -18,6 +21,7 @@ def test_init_wrapper():
         modargs = {}
         wrapper = dexy.commands.utils.init_wrapper(modargs)
         assert wrapper.artifacts_dir == 'custom'
+
 
 @patch.object(sys, 'argv', ['dexy', 'setup'])
 def test_setup_with_dexy_conf_file():
@@ -30,11 +34,13 @@ def test_setup_with_dexy_conf_file():
         assert os.path.isdir("custom")
         assert not os.path.exists("artifacts")
 
+
 @raises(SystemExit)
 @patch.object(sys, 'argv', ['dexy', 'grep', '-expr', 'hello'])
 def test_grep():
     with wrap():
         dexy.commands.run()
+
 
 @patch.object(sys, 'argv', ['dexy', 'grep'])
 @patch('sys.stderr', new_callable=StringIO)
@@ -45,6 +51,7 @@ def test_grep_without_expr(stderr):
     except SystemExit as e:
         assert e.message == 1
         assert 'Must specify either expr or key' in stderr.getvalue()
+
 
 @patch.object(sys, 'argv', ['dexy'])
 @patch('sys.stderr', new_callable=StringIO)
@@ -58,6 +65,7 @@ def test_run_with_userfeedback_exception(stderr):
 
         dexy.commands.run()
 
+
 @patch.object(sys, 'argv', ['dexy', 'invalid'])
 @patch('sys.stdout', new_callable=StringIO)
 def test_run_invalid_command(stdout):
@@ -67,11 +75,13 @@ def test_run_invalid_command(stdout):
     except SystemExit as e:
         assert e.message == 1
 
+
 @patch.object(sys, 'argv', ['dexy', '--help'])
 @patch('sys.stdout', new_callable=StringIO)
 def test_run_help_old_syntax(stdout):
     dexy.commands.run()
     assert "Commands for running dexy:" in stdout.getvalue()
+
 
 @patch.object(sys, 'argv', ['dexy', '--version'])
 @patch('sys.stdout', new_callable=StringIO)
@@ -79,17 +89,20 @@ def test_run_version_old_syntax(stdout):
     dexy.commands.run()
     assert DEXY_VERSION in stdout.getvalue()
 
+
 @patch.object(sys, 'argv', ['dexy', 'help'])
 @patch('sys.stdout', new_callable=StringIO)
 def test_run_help(stdout):
     dexy.commands.run()
     assert "Commands for running dexy:" in stdout.getvalue()
 
+
 @patch.object(sys, 'argv', ['dexy', 'version'])
 @patch('sys.stdout', new_callable=StringIO)
 def test_run_version(stdout):
     dexy.commands.run()
     assert DEXY_VERSION in stdout.getvalue()
+
 
 @patch.object(sys, 'argv', ['dexy'])
 @patch('sys.stdout', new_callable=StringIO)
@@ -115,6 +128,7 @@ def test_conf_command(stdout):
         assert os.path.exists("dexy.conf")
         assert "has been written" in stdout.getvalue()
 
+
 @patch.object(sys, 'argv', ['dexy', 'conf'])
 @patch('sys.stdout', new_callable=StringIO)
 def test_conf_command_if_path_exists(stdout):
@@ -125,6 +139,7 @@ def test_conf_command_if_path_exists(stdout):
         dexy.commands.run()
         assert "dexy.conf already exists" in stdout.getvalue()
         assert "artifactsdir" in stdout.getvalue()
+
 
 @patch.object(sys, 'argv', ['dexy', 'conf', '-p'])
 @patch('sys.stdout', new_callable=StringIO)
@@ -141,17 +156,20 @@ def test_filters_cmd(stdout):
     dexy.commands.run()
     assert "pyg : Apply Pygments" in stdout.getvalue()
 
+
 @patch.object(sys, 'argv', ['dexy', 'filters', '-alias', 'pyg'])
 @patch('sys.stdout', new_callable=StringIO)
 def test_filters_cmd_alias(stdout):
     dexy.commands.run()
     assert "pyg, pygments" in stdout.getvalue()
 
+
 @patch.object(sys, 'argv', ['dexy', 'filters', '-versions'])
 @patch('sys.stdout', new_callable=StringIO)
 def test_filters_text_versions__slow(stdout):
     dexy.commands.run()
     assert "Installed version: Python" in stdout.getvalue()
+
 
 @patch.object(sys, 'argv', ['dexy', 'filters', '-alias', 'pyg', '-source'])
 @patch('sys.stdout', new_callable=StringIO)
@@ -163,6 +181,7 @@ def test_filters_text_single_alias_source(stdout):
     assert "PygmentsFilter" in text
     assert not "class PygmentsFilter" in text
 
+
 @patch.object(sys, 'argv', ['dexy', 'filters', '-alias', 'pyg', '-source', '-nocolor'])
 @patch('sys.stdout', new_callable=StringIO)
 def test_filters_text_single_alias_source_nocolor(stdout):
@@ -171,6 +190,7 @@ def test_filters_text_single_alias_source_nocolor(stdout):
     assert "pyg, pygments" in text
     assert "class PygmentsFilter" in text
 
+
 @patch.object(sys, 'argv', ['dexy', 'parsers'])
 @patch('sys.stdout', new_callable=StringIO)
 def test_parsers_text(stdout):
@@ -178,12 +198,14 @@ def test_parsers_text(stdout):
     text = stdout.getvalue()
     assert "Yaml Parser" in text
 
+
 @patch.object(sys, 'argv', ['dexy', 'nodes'])
 @patch('sys.stdout', new_callable=StringIO)
 def test_nodes_text(stdout):
     dexy.commands.run()
     text = stdout.getvalue()
     assert "bundle" in text
+
 
 @patch.object(sys, 'argv', ['dexy', 'env'])
 @patch('sys.stdout', new_callable=StringIO)

@@ -1,7 +1,8 @@
-from dexy.filter import Filter
-from tests.utils import runfilter
 from nose.exc import SkipTest
 from nose.tools import raises
+
+from dexy.filter import Filter
+from tests.utils import runfilter
 from dexy.utils import s
 from dexy.utils import split_path
 from dexy.utils import iter_paths

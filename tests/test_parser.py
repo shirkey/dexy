@@ -7,6 +7,7 @@ from dexy.wrapper import Wrapper
 import dexy.exceptions
 import os
 
+
 def test_text_parser():
     with wrap() as wrapper:
         with open("f1.py", "w") as f:
@@ -36,10 +37,12 @@ def test_text_parser():
         ast.walk()
         assert len(wrapper.nodes) == 8
 
+
 YAML_WITH_INACTIVE = """
 foo:
     - inactive: True
 """
+
 
 def test_parse_inactive():
     with wrap() as wrapper:
@@ -54,10 +57,12 @@ def test_parse_inactive():
         ast.walk()
         assert len(wrapper.nodes) == 0
 
+
 YAML_WITH_DEFAULT_OFF = """
 foo:
     - default: False
 """
+
 
 def test_parse_default():
     with wrap() as wrapper:
@@ -85,6 +90,7 @@ def test_parse_default():
         ast.walk()
         assert len(wrapper.nodes) == 1
 
+
 def test_yaml_with_defaults():
     with wrap() as wrapper:
         os.makedirs("s1/s2")
@@ -103,7 +109,8 @@ def test_yaml_with_defaults():
         ast.walk()
 
         assert wrapper.roots[0].args['foo'] == 'bar'
-    
+
+
 def test_invalid_yaml():
     with wrap() as wrapper:
         ast = AbstractSyntaxTree(wrapper)
@@ -113,6 +120,7 @@ def test_invalid_yaml():
             assert False, "should raise UserFeedback"
         except dexy.exceptions.UserFeedback as e:
             assert 'YAML' in e.message
+
 
 def test_yaml_parser():
     with wrap() as wrapper:
@@ -130,6 +138,7 @@ def test_yaml_parser():
 
         wrapper.run_docs()
 
+
 def test_text_parser_blank_lines():
     with wrap() as wrapper:
         wrapper.nodes = {}
@@ -143,6 +152,7 @@ def test_text_parser_blank_lines():
         ast.walk()
         docs = wrapper.roots
         assert len(docs) == 0
+
 
 def test_text_parser_comments():
     with wrap() as wrapper:
@@ -162,6 +172,7 @@ def test_text_parser_comments():
         assert len(wrapper.roots) == 1
         assert wrapper.roots[0].key == "valid.doc"
 
+
 def test_text_parser_valid_json():
     with wrap() as wrapper:
         wrapper.nodes = {}
@@ -180,6 +191,7 @@ def test_text_parser_valid_json():
         assert docs[0].key == "doc.txt"
         assert docs[0].args['contents'] == "123"
 
+
 def test_text_parser_invalid_json():
     with wrap() as wrapper:
         ast = AbstractSyntaxTree(wrapper)
@@ -191,6 +203,7 @@ def test_text_parser_invalid_json():
             assert False, 'should raise UserFeedback'
         except dexy.exceptions.UserFeedback as e:
             assert 'unable to parse' in e.message
+
 
 def test_text_parser_virtual_file():
     with wrap() as wrapper:
@@ -215,6 +228,7 @@ def test_text_parser_virtual_file():
         assert docs[0].key == "virtual.txt"
         assert str(docs[0].output_data()) == "hello"
 
+
 def test_original_parser():
     with wrap() as wrapper:
         wrapper.nodes = {}
@@ -231,6 +245,7 @@ def test_original_parser():
         ast.walk()
 
         assert wrapper.roots[0].key_with_class() == "pattern:*.txt"
+
 
 def test_original_parser_allinputs():
     with wrap() as wrapper:
@@ -252,6 +267,7 @@ def test_original_parser_allinputs():
 
         assert len(wrapper.roots) == 1
         assert wrapper.roots[0].key_with_class() == "pattern:*.md|jinja"
+
 
 INVALID_YAML = """
 code:

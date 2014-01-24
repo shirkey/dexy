@@ -1,8 +1,10 @@
+from nose.tools import raises
+
 from dexy.data import Data
 from dexy.doc import Doc
 from dexy.exceptions import UserFeedback
 from tests.utils import wrap
-from nose.tools import raises
+
 
 def test_create_doc_with_one_filter():
     with wrap() as wrapper:
@@ -16,6 +18,7 @@ def test_create_doc_with_one_filter():
         assert not f.next_filter
 
         wrapper.run_docs(doc)
+
 
 def test_create_doc_with_two_filters():
     with wrap() as wrapper:
@@ -33,16 +36,19 @@ def test_create_doc_with_two_filters():
         assert not f1.prev_filter
         assert not f2.next_filter
 
+
 @raises(UserFeedback)
 def test_blank_alias():
     with wrap() as wrapper:
         Doc("abc.txt|", wrapper, [], contents='foo')
+
 
 def test_output_is_data():
     with wrap() as wrapper:
         doc = Doc("abc.txt", wrapper, [], contents="these are the contents")
         wrapper.run_docs(doc)
         assert isinstance(doc.output_data(), Data)
+
 
 def test_create_virtual_initial_artifact():
     with wrap() as wrapper:

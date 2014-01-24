@@ -1,9 +1,10 @@
 from tests.utils import wrap
 from dexy.doc import Doc
 
+
 def test_split_html_filter():
     with wrap() as wrapper:
-        contents="""
+        contents = """
         <p>This is at the top.</p>
         <!-- split "index" -->
         index page content only
@@ -45,9 +46,10 @@ def test_split_html_filter():
         assert "some content on another page" in od
         assert "bottom" in od
 
+
 def test_split_html_additional_filters():
     with wrap() as wrapper:
-        contents="""
+        contents = """
         <p>This is at the top.</p>
         <!-- split "a-page" -->
         some content on a page
@@ -58,11 +60,11 @@ def test_split_html_additional_filters():
         """
 
         node = Doc("example.html|splithtml",
-                wrapper,
-                [],
-                contents=contents,
-                splithtml = { "keep-originals" : False, "additional-doc-filters" : "processtext" },
-              )
+                   wrapper,
+            [],
+                   contents=contents,
+                   splithtml={"keep-originals": False, "additional-doc-filters": "processtext"},
+        )
         wrapper.run_docs(node)
 
         assert node.children[0].key == "a-page.html|processtext"

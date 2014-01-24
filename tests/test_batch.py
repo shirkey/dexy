@@ -3,6 +3,7 @@ from dexy.wrapper import Wrapper
 import dexy.batch
 import os
 
+
 def test_batch():
     with tempdir():
         wrapper = Wrapper()
@@ -17,6 +18,7 @@ def test_batch():
 
         wrapper = Wrapper()
         batch = dexy.batch.Batch.load_most_recent(wrapper)
+
 
 def test_batch_with_docs():
     with tempdir():

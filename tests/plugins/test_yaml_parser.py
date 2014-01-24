@@ -7,6 +7,7 @@ from dexy.wrapper import Wrapper
 import dexy.batch
 import os
 
+
 def test_hard_tabs_in_config():
     with wrap():
         with capture_stderr() as stderr:
@@ -22,6 +23,7 @@ def test_hard_tabs_in_config():
                 assert "hard tabs" in str(e)
 
             assert "abc/def/dexy.yaml" in stderr.getvalue()
+
 
 def test_subdir_config_with_bundle():
     with wrap():
@@ -53,6 +55,7 @@ def test_subdir_config_with_bundle():
         wrapper.run_from_new()
         assert "doc:abc/def/hello.py" in wrapper.nodes
 
+
 def test_except_patterndoc():
     with wrap() as wrapper:
         with open("exceptme.abc", "w") as f:
@@ -69,6 +72,7 @@ def test_except_patterndoc():
         ast.walk()
 
         assert len(wrapper.nodes) == 1
+
 
 def test_except_patterndoc_pattern():
     with wrap() as wrapper:
@@ -93,6 +97,7 @@ def test_except_patterndoc_pattern():
         wrapper.run()
 
         assert len(wrapper.nodes) == 1
+
 
 def test_children_siblings_order():
     with wrap() as wrapper:
@@ -121,29 +126,30 @@ def test_children_siblings_order():
 
         p1 = wrapper.nodes['bundle:p1']
         assert [i.key_with_class() for i in p1.walk_inputs()] == [
-                'bundle:c1',
-                'bundle:c2',
-                'bundle:g1',
-                'bundle:g2',
-                'bundle:g3',
-                'bundle:c3'
-                ]
+            'bundle:c1',
+            'bundle:c2',
+            'bundle:g1',
+            'bundle:g2',
+            'bundle:g3',
+            'bundle:c3'
+        ]
 
         c1 = wrapper.nodes['bundle:c1']
         assert len(c1.inputs) == 0
 
         c2 = wrapper.nodes['bundle:c2']
         assert [i.key_with_class() for i in c2.walk_inputs()] == [
-                'bundle:g1',
-                'bundle:g2',
-                'bundle:g3'
-                ]
+            'bundle:g1',
+            'bundle:g2',
+            'bundle:g3'
+        ]
 
         c3 = wrapper.nodes['bundle:c3']
         assert len(c3.inputs) == 0
 
         g3 = wrapper.nodes['bundle:g3']
         assert len(g3.inputs) == 0
+
 
 def test_single_file_doc():
     with wrap() as wrapper:
@@ -166,6 +172,7 @@ def test_single_file_doc():
         wrapper.run()
         assert "doc:hello.txt" in wrapper.nodes
 
+
 def test_single_bundle_doc():
     with wrap() as wrapper:
         wrapper.nodes = {}
@@ -180,6 +187,7 @@ def test_single_bundle_doc():
         wrapper.transition('walked')
         wrapper.to_checked()
         assert "bundle:hello" in wrapper.nodes
+
 
 def test_single_bundle_doc_with_args():
     with wrap() as wrapper:
@@ -211,6 +219,7 @@ def test_single_bundle_doc_with_args():
 
         assert wrapper.roots[0].key_with_class() == "bundle:more"
         assert len(wrapper.nodes) == 5
+
 
 def test_single_bundle_doc_with_args_2():
     with wrap() as wrapper:

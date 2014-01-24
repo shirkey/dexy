@@ -2,6 +2,7 @@ from dexy.parser import AbstractSyntaxTree
 from tests.utils import wrap
 import dexy.batch
 
+
 def test_ast():
     with wrap() as wrapper:
         wrapper.nodes = {}
@@ -11,9 +12,9 @@ def test_ast():
 
         ast = AbstractSyntaxTree(wrapper)
 
-        ast.add_node("abc.txt", foo='bar', contents = 'abc')
+        ast.add_node("abc.txt", foo='bar', contents='abc')
         ast.add_dependency("abc.txt", "def.txt")
-        ast.add_node("def.txt", foo='baz', contents = 'def')
+        ast.add_node("def.txt", foo='baz', contents='def')
 
         assert ast.tree == ['doc:abc.txt']
         assert ast.args_for_node('doc:abc.txt')['foo'] == 'bar'

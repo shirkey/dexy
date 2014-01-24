@@ -5,22 +5,23 @@ import dexy.data
 import dexy.exceptions
 import os
 
+
 def test_sectioned_data_setitem_delitem():
     with wrap() as wrapper:
-        contents=[
-                {},
-                {
-                    "name" : "Welcome",
-                    "contents" : "This is the first section."
-                }
-            ]
+        contents = [
+            {},
+            {
+                "name": "Welcome",
+                "contents": "This is the first section."
+            }
+        ]
 
         doc = Doc("hello.txt",
-                wrapper,
-                [],
-                data_type="sectioned",
-                contents=contents
-                )
+                  wrapper,
+            [],
+                  data_type="sectioned",
+                  contents=contents
+        )
 
         wrapper.run_docs(doc)
         data = doc.output_data()
@@ -32,7 +33,7 @@ def test_sectioned_data_setitem_delitem():
         data["Conclusions"] = "This is the final section."
 
         assert len(data) == 2
-        
+
         assert unicode(data['Welcome']) == "This is the first section."
         assert unicode(data["Conclusions"]) == "This is the final section."
 
@@ -49,13 +50,14 @@ def test_sectioned_data_setitem_delitem():
         assert len(data) == 1
         assert data.keys() == ["Welcome"]
 
+
 def test_generic_data_unicode():
     with wrap() as wrapper:
         doc = Doc("hello.txt",
-                wrapper,
-                [],
-                contents=u"\u2042 we know\n"
-                )
+                  wrapper,
+            [],
+                  contents=u"\u2042 we know\n"
+        )
 
         wrapper.run_docs(doc)
         data = doc.output_data()
@@ -66,13 +68,14 @@ def test_generic_data_unicode():
         assert isinstance(str(data), str)
         assert isinstance(unicode(data), unicode)
 
+
 def test_generic_data_stores_string():
     with wrap() as wrapper:
         doc = Doc("hello.txt",
-                wrapper,
-                [],
-                contents="hello"
-                )
+                  wrapper,
+            [],
+                  contents="hello"
+        )
 
         wrapper.run_docs(doc)
         data = doc.output_data()
@@ -80,22 +83,23 @@ def test_generic_data_stores_string():
         assert data.alias == 'generic'
         assert data._data == "hello"
 
+
 def test_sectioned_data_stores_list_of_dicts():
     with wrap() as wrapper:
-        contents=[
-                {},
-                {
-                    "name" : "Welcome",
-                    "contents" : "This is the first section."
-                }
-            ]
+        contents = [
+            {},
+            {
+                "name": "Welcome",
+                "contents": "This is the first section."
+            }
+        ]
 
         doc = Doc("hello.txt",
-                wrapper,
-                [],
-                data_type="sectioned",
-                contents=contents
-                )
+                  wrapper,
+            [],
+                  data_type="sectioned",
+                  contents=contents
+        )
 
         wrapper.run_docs(doc)
         data = doc.output_data()
@@ -105,14 +109,15 @@ def test_sectioned_data_stores_list_of_dicts():
         assert data['Welcome']['contents'] == "This is the first section."
         assert data[0]['contents'] == "This is the first section."
 
+
 def test_keyvalue_data_stores_dict():
     with wrap() as wrapper:
         doc = Doc("hello.json",
-                wrapper,
-                [],
-                data_type="keyvalue",
-                contents="dummy contents"
-                )
+                  wrapper,
+            [],
+                  data_type="keyvalue",
+                  contents="dummy contents"
+        )
 
         wrapper.run_docs(doc)
         data = doc.output_data()
@@ -125,26 +130,28 @@ def test_keyvalue_data_stores_dict():
 
         assert sorted(data.keys()) == ["bar", "foo"]
 
+
 def test_canonical_name():
     with wrap() as wrapper:
         doc = Doc("hello.txt",
-                wrapper,
-                [],
-                contents="hello",
-                output_name="yello.abc")
+                  wrapper,
+            [],
+                  contents="hello",
+                  output_name="yello.abc")
 
         wrapper.run_docs(doc)
         assert doc.output_data().output_name() == "yello.abc"
         wrapper.report()
         assert os.path.exists(os.path.join('output', 'yello.abc'))
 
+
 def test_attempt_write_outside_project_root():
     with wrap() as wrapper:
         try:
             doc = Doc("../../example.txt",
-                wrapper,
+                      wrapper,
                 [],
-                contents = "hello")
+                      contents="hello")
             doc.setup()
             doc.setup_datas()
             assert False, 'should raise UserFeedback'
@@ -152,12 +159,13 @@ def test_attempt_write_outside_project_root():
             print str(e)
             assert 'trying to write' in str(e)
 
+
 def test_key_value_data():
     with wrap() as wrapper:
         settings = {
-                'canonical-name' : 'doc.json',
-                'storage-type' : 'json'
-                }
+            'canonical-name': 'doc.json',
+            'storage-type': 'json'
+        }
         data = dexy.data.KeyValue("doc.json", ".json", "doc.json", settings, wrapper)
         data.setup_storage()
 
@@ -171,14 +179,15 @@ def test_key_value_data():
         assert data.value('foo') == 'bar'
         assert data.storage['foo'] == 'bar'
 
+
 def test_key_value_data_sqlite():
     with wrap() as wrapper:
         wrapper.to_walked()
         wrapper.to_checked()
 
         settings = {
-                'canonical-name' : 'doc.sqlite3'
-                }
+            'canonical-name': 'doc.sqlite3'
+        }
 
         data = dexy.data.KeyValue("doc.sqlite3", ".sqlite3", "abc000", settings, wrapper)
         data.setup_storage()
@@ -190,6 +199,7 @@ def test_key_value_data_sqlite():
         assert data.value('foo') == 'bar'
         assert ["%s: %s" % (k, v) for k, v in data.storage.iteritems()][0] == "foo: bar"
 
+
 def test_generic_data():
     with wrap() as wrapper:
         wrapper.to_walked()
@@ -199,8 +209,8 @@ def test_generic_data():
 
         # Create a GenericData object
         settings = {
-                'canonical-name' : 'doc.txt'
-                }
+            'canonical-name': 'doc.txt'
+        }
         data = dexy.data.Generic("doc.txt", ".txt", "abc000", settings, wrapper)
         data.setup_storage()
 
@@ -224,11 +234,12 @@ def test_generic_data():
 
         assert data.as_text() == CONTENTS
 
+
 def test_init_data():
     with wrap() as wrapper:
         settings = {
-                'canonical-name' : 'doc.abc'
-                }
+            'canonical-name': 'doc.abc'
+        }
         data = dexy.data.Generic("doc.txt", ".abc", "def123", settings, wrapper)
         data.setup_storage()
 

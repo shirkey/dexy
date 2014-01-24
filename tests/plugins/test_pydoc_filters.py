@@ -1,6 +1,7 @@
 from tests.utils import wrap
 from dexy.doc import Doc
 
+
 def test_pydoc_filter_on_module_names():
     with wrap() as wrapper:
         doc = Doc("modules.txt|pydoc", wrapper, [], contents="os math")
@@ -8,6 +9,7 @@ def test_pydoc_filter_on_module_names():
         data = doc.output_data()
         assert len(data.keys()) > 100
         assert data['math.e:value'].startswith("2.71828")
+
 
 python_file_content = """
 import math
@@ -28,6 +30,7 @@ def bar():
 
 """
 
+
 def test_pydoc_filter_on_python_files():
     with wrap() as wrapper:
         doc = Doc("source.py|pydoc", wrapper, [], contents=python_file_content)
@@ -38,7 +41,7 @@ def test_pydoc_filter_on_python_files():
 
         assert 'bar:source' in keys
         assert 'foo:source' in keys
-        
+
         assert data['foo:doc'] == "docstring for foo"
         assert data['foo:comments'] == "# Comment for foo\n"
 

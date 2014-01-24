@@ -3,11 +3,12 @@ from dexy.exceptions import UserFeedback
 from tests.utils import wrap
 import os
 
+
 def test_create_new_sectioned_dat():
     with wrap() as wrapper:
         settings = {
-                'canonical-name' : "doc.txt"
-                }
+            'canonical-name': "doc.txt"
+        }
         data = Sectioned("doc.txt", ".txt", "def123", settings, wrapper)
         data.setup()
 
@@ -27,6 +28,7 @@ def test_create_new_sectioned_dat():
         del data['beta']
         assert data.keys() == ['alpha', 'gamma']
 
+
 def test_load_json():
     with wrap() as wrapper:
         os.makedirs(".dexy/this/de")
@@ -40,8 +42,8 @@ def test_load_json():
             """)
 
         settings = {
-                'canonical-name' : "doc.txt"
-                }
+            'canonical-name': "doc.txt"
+        }
         data = Sectioned("doc.txt", ".txt", "def123", settings, wrapper)
         data.setup_storage()
 

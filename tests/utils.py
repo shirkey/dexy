@@ -1,27 +1,32 @@
 from StringIO import StringIO
+import sys
+
+from mock import MagicMock
+from nose.exc import SkipTest
+
 from dexy.data import Sectioned
 from dexy.doc import Doc
 from dexy.exceptions import InactivePlugin
 from dexy.utils import char_diff
 from dexy.utils import tempdir
-from mock import MagicMock
-from nose.exc import SkipTest
 import os
 import re
-import sys
 
-import dexy.load_plugins
 
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 
+
 def make_wrapper():
     from dexy.wrapper import Wrapper
-    return Wrapper(log_level = 'DEBUG', debug=True)
+
+    return Wrapper(log_level='DEBUG', debug=True)
+
 
 class wrap(tempdir):
     """
     Create a temporary directory and initialize a dexy wrapper.
     """
+
     def __enter__(self):
         self.make_temp_dir()
         wrapper = make_wrapper()
@@ -36,10 +41,12 @@ class wrap(tempdir):
             print value.message
             raise SkipTest("Inactive plugin: %s" % value)
 
+
 class runfilter(wrap):
     """
     Create a temporary directory, initialize a doc and a wrapper, and run the doc.
     """
+
     def __init__(self, filter_alias, doc_contents, ext=".txt", basename=None):
         self.filter_alias = filter_alias
         self.doc_contents = doc_contents
@@ -58,12 +65,12 @@ class runfilter(wrap):
                 data_class = 'sectioned'
 
             doc = Doc(
-                    doc_key,
-                    wrapper,
-                    [],
-                    contents = doc_contents,
-                    data_class = data_class
-                    )
+                doc_key,
+                wrapper,
+                [],
+                contents=doc_contents,
+                data_class=data_class
+            )
             wrapper.run_docs(doc)
             return doc
 
@@ -84,6 +91,7 @@ class runfilter(wrap):
             raise SkipTest
 
         return doc
+
 
 def assert_output(filter_alias, doc_contents, expected_output, ext=".txt", basename=None):
     if not ext.startswith("."):
@@ -109,6 +117,7 @@ def assert_output(filter_alias, doc_contents, expected_output, ext=".txt", basen
             except AssertionError:
                 print char_diff(actual_output_data, expected_output)
 
+
 def assert_output_matches(filter_alias, doc_contents, expected_regex, ext=".txt"):
     if not ext.startswith("."):
         raise Exception("ext arg to assert_in_output must start with dot")
@@ -118,6 +127,7 @@ def assert_output_matches(filter_alias, doc_contents, expected_regex, ext=".txt"
             assert re.match(expected_regex, unicode(doc.output_data()))
         else:
             raise Exception(unicode(doc.output_data()))
+
 
 def assert_output_cached(filter_alias, doc_contents, ext=".txt", min_filesize=None):
     if not ext.startswith("."):
@@ -136,6 +146,7 @@ def assert_output_cached(filter_alias, doc_contents, ext=".txt", min_filesize=No
         else:
             raise Exception("state is '%s'" % doc.wrapper.state)
 
+
 def assert_in_output(filter_alias, doc_contents, expected_output, ext=".txt"):
     if not ext.startswith("."):
         raise Exception("ext arg to assert_in_output must start with dot")
@@ -148,6 +159,7 @@ def assert_in_output(filter_alias, doc_contents, expected_output, ext=".txt"):
         else:
             raise Exception(unicode(doc.output_data()))
 
+
 class capture_stdout():
     def __enter__(self):
         self.old_stdout = sys.stdout
@@ -159,6 +171,7 @@ class capture_stdout():
         sys.stdout = self.old_stdout
         self.my_stdout.close()
 
+
 class capture_stderr():
     def __enter__(self):
         self.old_stderr = sys.stderr
@@ -169,6 +182,7 @@ class capture_stderr():
     def __exit__(self, type, value, traceback):
         sys.stderr = self.old_stderr
         self.my_stderr.close()
+
 
 class run_templating_plugin():
     def __init__(self, klass, mock_attrs=None):
