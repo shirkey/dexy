@@ -1,5 +1,9 @@
+from pip.req import parse_requirements
 from setuptools import setup, find_packages
 from dexy.version import DEXY_VERSION
+
+install_reqs = parse_requirements("requirements.txt")
+reqs = [str(ir.req) for ir in install_reqs]
 
 setup(
         author='Ana Nelson',
@@ -32,25 +36,7 @@ setup(
             },
         ### @end
         include_package_data = True,
-        install_requires = [
-            # for internal dexy use or used in many common plugins
-            'BeautifulSoup4',
-            'PyYAML',
-            'cashew>=0.2.7',
-            'chardet',
-            'inflection>=0.2.0',
-            'jinja2',
-            'pexpect',
-            'ply>=3.4',
-            'pygments',
-            'python-modargs>=1.7',
-            'requests>=0.10.6',
-            # dexy utilities
-            'dexy_viewer', ## TODO version
-            # for convenience of running additional filters
-            'Markdown',
-            'docutils'
-            ],
+        install_requires=reqs,
         name='dexy',
         packages=find_packages(),
         url='http://dexy.it',

@@ -1,0 +1,16 @@
+BeautifulSoup4
+PyYAML
+cashew>=0.2.7
+chardet
+inflection>=0.2.0
+jinja2
+pexpect
+ply>=3.4
+pygments
+python-modargs>=1.7
+requests>=0.10.6
+# dexy utilities
+dexy_viewer
+# for convenience of running additional filters
+Markdown
+docutils
